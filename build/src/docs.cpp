@@ -50,8 +50,10 @@ int main() {
     getAllFiles(dir, files);
     
     ofstream out("../Test.txt");
-    for (int i = 0; i < files.size(); i++)
-        out << readFile(files[i]);
+    for (int i = 0; i < files.size(); i++) {
+        cout << files[i] << endl;
+        out << " -------- " << files[i] << " -------- " << "\n" << readFile(files[i]);
+    }
     
     out.close();
 }
