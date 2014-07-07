@@ -18,27 +18,47 @@ string getIncludedFile(string includeLine) {
     return includeLine.substr(initialPos, finalPos - initialPos + 1);
 }
 
-int main() {
-    ifstream source("../src/problem.cpp");
-    ofstream temp("../src/temp.cpp");
+string readFile(string filePath) {
+    string content;
+    ifstream file(filePath);
+    string line;
+    while (getline(file, line))
+        content += line + '\n';
+    file.close();
+    return content;
+}
+
+bool getline(string &str, string &line) {
+    int ind = 0;
+    if(str.length() == 0)
+        return false;
+    while(ind < str.length() && str[ind++] != '\n');
+
+    line = str.substr(0, ind - 1);
+    str = str.substr(ind);
+    return true;
+}
+
+string includeFiles(string source) {
+    string result;
     
     string line;
     while(getline(source, line))
     {
         if(isInclude(line)) {
-            temp << ("//" + line) << endl;
-            ifstream includeFile("../../lib/src/" + getIncludedFile(line));
-            while(getline(includeFile, line)) {
-                temp << line << endl;
-            }
-            includeFile.close();
+            result += ("//" + line) + '\n';
+            result += includeFiles(readFile("../../lib/src/" + getIncludedFile(line)));
         } else {
-            temp << line << endl;
+            result += line + '\n';
         }
     }
     
-    source.close();
-    temp.close();
-    
-    system("mv ../src/temp.cpp ../src/problem.cpp");
+    return result;
+}
+
+int main() {
+    string fixedSource = includeFiles(readFile("../src/problem.cpp"));
+    ofstream sourceFile("../src/problem.cpp");
+    sourceFile << fixedSource << endl;
+    sourceFile.close();
 }
