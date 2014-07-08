@@ -28,7 +28,7 @@ int main(int argc, char **argv) {
 	
 	source.close();
 
-	bool syntaxError = system(("g++ -DDEBUG -o problem " + srcFile).c_str());
+	bool syntaxError = system(("g++ -iquote ../../lib/src/ -DDEBUG -o problem " + srcFile).c_str());
 	if(!syntaxError) {
         ifstream input(inputFile.c_str());
 		if(input.good()) 
