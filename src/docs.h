@@ -5,22 +5,11 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include "common.h"
 
 using namespace std;
 
 unsigned char isFile = 0x8;
-
-string readFile(string path) {
-    string output;
-    ifstream file(path);
-    while(file.good()) {
-        string line;
-        getline(file, line);
-        output += line + "\n";
-    }
-    file.close();
-    return output;
-}
 
 int getAllFiles(string dir, vector<string> &files) {
     DIR *dp;
@@ -43,17 +32,16 @@ int getAllFiles(string dir, vector<string> &files) {
     return 0;
 }
 
-int main() {
-    string dir = string("../../src");
+void createDocs(char *out) {
     vector<string> files = vector<string>();
     
-    getAllFiles(dir, files);
+    getAllFiles(settings.libDir.substr(0, settings.libDir.length() - 1), files);
     
-    ofstream out("../Test.txt");
+    ofstream outputFile(out);
     for (int i = 0; i < files.size(); i++) {
         cout << files[i] << endl;
-        out << " -------- " << files[i] << " -------- " << "\n" << readFile(files[i]);
+        outputFile << " -------- " << files[i] << " -------- " << "\n" << readFile(files[i]);
     }
     
-    out.close();
+    outputFile.close();
 }

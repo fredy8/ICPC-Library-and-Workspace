@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <regex>
+#include "common.h"
 
 using namespace std;
 
@@ -18,16 +19,6 @@ string getIncludedFile(string includeLine) {
     return includeLine.substr(initialPos, finalPos - initialPos + 1);
 }
 
-string readFile(string filePath) {
-    string content;
-    ifstream file(filePath);
-    string line;
-    while (getline(file, line))
-        content += line + '\n';
-    file.close();
-    return content;
-}
-
 bool getline(string &str, string &line) {
     int ind = 0;
     if(str.length() == 0)
@@ -40,25 +31,20 @@ bool getline(string &str, string &line) {
 }
 
 string includeFiles(string source) {
-    string result;
-    
-    string line;
+    string result, line;
+
     while(getline(source, line))
-    {
-        if(isInclude(line)) {
-            result += ("//" + line) + '\n';
-            result += includeFiles(readFile("../../lib/src/" + getIncludedFile(line)));
-        } else {
+        if(isInclude(line))
+            result += ("//" + line) + '\n' + includeFiles(readFile(settings.libDir + getIncludedFile(line)));
+        else
             result += line + '\n';
-        }
-    }
-    
     return result;
 }
 
-int main() {
-    string fixedSource = includeFiles(readFile("../src/problem.cpp"));
-    ofstream sourceFile("../src/problem.cpp");
-    sourceFile << fixedSource << endl;
-    sourceFile.close();
+void include(char *in, char *out) {
+    string includedSource = includeFiles(readFile(string(in)));
+    cout << out << endl;
+    ofstream outputFile(out);
+    outputFile << includedSource << endl;
+    outputFile.close();
 }

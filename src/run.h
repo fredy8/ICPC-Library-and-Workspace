@@ -2,18 +2,18 @@
 #include <cstdio>
 #include <cstdlib>
 #include <fstream>
+#include "common.h"
 
 using namespace std;
 
-int main(int argc, char **argv) {
+void run(char *src) {
     
-    string currentDir(argv[0]);
-    currentDir = currentDir.substr(0, currentDir.find_last_of('/') + 1);
+    string sourceDir(src), sourceFile(src);
+    sourceDir = sourceDir.substr(0, sourceDir.find_last_of('/') + 1);
     
-    string srcFile = currentDir + "../src/problem.cpp";
-    string inputFile = currentDir + "../src/input.txt";
+    string inputFile = sourceDir + "input.txt";
     
-	ifstream source(srcFile.c_str());
+	ifstream source(sourceFile.c_str());
 	int i = 0;
 	string line;
 	getline(source, line);
@@ -28,7 +28,8 @@ int main(int argc, char **argv) {
 	
 	source.close();
 
-	bool syntaxError = system(("g++ -iquote ../../lib/src/ -DDEBUG -o problem " + srcFile).c_str());
+	cout << settings.libDir << endl;
+	bool syntaxError = system(("g++ -iquote " + settings.libDir + " -DDEBUG -o problem " + sourceFile).c_str());
 	if(!syntaxError) {
         ifstream input(inputFile.c_str());
 		if(input.good()) 
