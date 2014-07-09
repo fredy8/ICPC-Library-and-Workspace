@@ -9,10 +9,12 @@
 using namespace std;
 
 void loadSettings(string settingFilePath) {
-	cout << settingFilePath << endl;
 	ifstream file(settingFilePath);
 	string line;
 	getline(file, line);
+    int homeDirPos = line.find("~");
+    if(homeDirPos != string::npos)
+        line = line.replace(homeDirPos, 1, getenv("HOME"));
 	settings.libDir = line;
 	file.close();
 }

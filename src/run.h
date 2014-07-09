@@ -8,8 +8,8 @@ using namespace std;
 
 void run(char *src) {
     
-    string sourceDir(src), sourceFile(src);
-    sourceDir = sourceDir.substr(0, sourceDir.find_last_of('/') + 1);
+    string sourceDir, sourceFile(src);
+    sourceDir = sourceFile.substr(0, sourceDir.find_last_of('/') + 1);
     
     string inputFile = sourceDir + "input.txt";
     
@@ -28,8 +28,7 @@ void run(char *src) {
 	
 	source.close();
 
-	cout << settings.libDir << endl;
-	bool syntaxError = system(("g++ -iquote " + settings.libDir + " -DDEBUG -o problem " + sourceFile).c_str());
+	bool syntaxError = system(("g++ -iquote \"" + settings.libDir + "\" -DDEBUG -o problem \"" + sourceFile + "\"").c_str());
 	if(!syntaxError) {
         ifstream input(inputFile.c_str());
 		if(input.good()) 
